@@ -34,7 +34,7 @@ log_step() {
     eval "$command"
   else
     # Выполняем команду, подавляя её вывод
-    eval "$command" >/dev/null 2>&1
+     output=$(eval "$command" 2>&1)
   fi
 
   # Проверка успешности выполнения команды
@@ -42,6 +42,7 @@ log_step() {
     printf "\r${YELLOW}%-50s\t${GREEN}ОК${RESET}\n" "$message..."
 else
     printf "\r${YELLOW}%-50s\t${RED}Ошибка${RESET}\n" "$message..."
+    echo -e "${RED}$output"
     exit 1
 fi
 }
