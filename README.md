@@ -13,7 +13,7 @@ sudo apt update && sudo apt dist-upgrade -y
 Проверить на `root` учетной записи, что у пользователя есть доступ к группе `sudo`
 
 ```bash
-sudo usermod -a -G sudo <username>
+sudo usermod -aG sudo <username>
 ```
 
 # SETUP DOCKER
