@@ -1,46 +1,63 @@
 # serverhub
 
-Рекомендация, перед выполнением любых скриптов использовать обновления системы:
+## Рекомендация
 
-**Ubuntu:**
-```bash
-sudo apt update && sudo apt dist-upgrade -y
-```
+- перед выполнением любых скриптов использовать обновления системы:
+    
+    **Ubuntu:**
+    ```bash
+    sudo apt update && sudo apt dist-upgrade -y
+    ```
+    
+    **Debian:**
+    ```bash
+    sudo apt update && sudo apt full-upgrade -y
+    ```
+    
+    **CentOS / RHEL:**
+    ```bash
+    sudo yum update -y  # CentOS 7 и старше
+    ```
+    ```bash
+    sudo dnf upgrade -y # CentOS Stream, RHEL 8 и выше
+    ```
+    
+    **Fedora:**
+    ```bash
+    sudo dnf upgrade --refresh -y
+    ```
+    
+    **Arch:**
+    ```bash
+    sudo pacman -Syu --noconfirm
+    ```
+    
+    **OpenSUSE:**
+    ```bash
+    sudo zypper refresh && sudo zypper update -y
+    ```
+    
+    **Alpine:**
+    ```bash
+    sudo apk update && sudo apk upgrade
+    ```
 
-**Debian:**
-```bash
-sudo apt update && sudo apt full-upgrade -y
-```
+- проверить на `root` учетной записи, что у пользователя есть доступ к группе `sudo`
 
-**CentOS / RHEL:**
-```bash
-sudo yum update -y  # CentOS 7 и старше
-```
-```bash
-sudo dnf upgrade -y # CentOS Stream, RHEL 8 и выше
-```
-
-**Fedora:**
-```bash
-sudo dnf upgrade --refresh -y
-```
-
-**Arch:**
-```bash
-sudo pacman -Syu --noconfirm
-```
-
-**OpenSUSE:**
-```bash
-sudo zypper refresh && sudo zypper update -y
-```
-
-**Alpine:**
-```bash
-sudo apk update && sudo apk upgrade
-```
-
-
+    **Ubuntu / Debian:**
+    ```bash
+    sudo usermod -a -G sudo <username>
+    ```
+  
+    **CentOS / RHEL / Fedora / Arch / OpenSUSE:**
+    ```bash
+    sudo usermod -a -G wheel <username>
+    ```
+    
+    **Alpine:**
+    ```bash
+    sudo addgroup <username> wheel
+    ```
 
 # SETUP DOCKER
 
