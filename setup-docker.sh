@@ -86,20 +86,19 @@ echo -ne "${YELLOW}"
 
 # Используем цикл для проверки корректности ввода
 while true; do
-  read -p "Хотите настроить доступ к Docker без sudo для текущего пользователя ($CURRENT_USER) через sudoers? (y/n): " add_user
+  read -p "Хотите добавить текущего пользователя ($CURRENT_USER) в группу Docker для запуска команд без sudo? (y/n): " add_user
   if [[ "$add_user" == "y" || "$add_user" == "Y" ]]; then
-    # Добавляем запись в файл /etc/sudoers.d/docker
-    echo "${CURRENT_USER} ALL=(ALL) NOPASSWD: /usr/bin/docker" | sudo tee /etc/sudoers.d/docker >/dev/null
-    sudo chmod 0440 /etc/sudoers.d/docker
+    # Добавляем пользователя в группу docker
+    sudo usermod -aG docker "$CURRENT_USER"
+    echo -e "${GREEN}Пользователь $CURRENT_USER добавлен в группу Docker."
+    echo -e "${YELLOW}Необходимо перелогинить пользователя.${RESET}"
 
-    echo -e "${YELLOW}Настроен доступ к Docker без sudo для $CURRENT_USER."
-    echo -e "Изменения вступили в силу сразу.${RESET}"
     break
   elif [[ "$add_user" == "n" || "$add_user" == "N" ]]; then
-    echo -e "${RED}Настройка доступа к Docker без sudo пропущена.${RESET}"
+    echo -e "${YELLOW}Добавление пользователя в группу Docker пропущено.${RESET}"
     break
   else
-    echo -e "${RED}Ошибка: введите 'y' или 'n'.${YELLOW}"
+    echo -e "${RED}Ошибка: ${YELLOW}Введите 'y' или 'n'.${RESET}"
   fi
 done
 
