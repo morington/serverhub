@@ -1,31 +1,40 @@
 #!/bin/bash
 
-# Функция для вывода текущей задачи в нижней строке
+# Функция для вывода текущей задачи в нижней строке и очистки предыдущей строки
 log_step() {
-  # Очищаем последнюю строку и выводим туда сообщение
-  tput sc               # Сохраняем текущую позицию курсора
-  tput cup $(tput lines) 0  # Переходим на последнюю строку
-  echo -ne "$1"          # Выводим сообщение
-  tput rc               # Возвращаемся на сохраненную позицию
+  # Сохраняем текущую позицию курсора и переходим в последнюю строку
+  tput sc
+  tput cup $(tput lines) 0
+
+  # Очищаем строку, заполняя её пробелами, затем возвращаем курсор в начало строки
+  printf "%-$(tput cols)s" " "
+  tput cup $(tput lines) 0
+
+  # Выводим новое сообщение
+  echo -ne "$1"
+
+  # Возвращаем курсор на сохраненное место
+  tput rc
 }
 
 # Обновляем список пакетов
 log_step "Обновляем список пакетов..."
-sudo apt-get update | tee >(log_step "Обновление списка пакетов завершено.")  # Используем tee для отображения действий в реальном времени
+sudo apt-get update | tee >(log_step "Обновление списка пакетов завершено.")
 
-# Устанавливаем пакеты для работы apt-get через HTTPS
+# Устанавливаем пакеты для работы через HTTPS
 log_step "Устанавливаем пакеты для работы через HTTPS..."
 sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common \
     | tee >(log_step "Установка пакетов для HTTPS завершена.")
 
 # Добавляем GPG-ключ репозитория Docker
 log_step "Добавляем GPG-ключ репозитория Docker..."
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - \
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
     | tee >(log_step "Добавление GPG-ключа завершено.")
 
 # Добавляем репозиторий Docker в источники
 log_step "Добавляем репозиторий Docker в источники APT..."
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null \
     | tee >(log_step "Репозиторий Docker добавлен.")
 
 # Обновляем список пакетов с репозитория Docker
