@@ -19,8 +19,8 @@ log_step() {
   local command=$2
   local interactive=${3:-true} # Флаг для интерактивного режима (по умолчанию false)
 
-  # Выводим сообщение с "идет выполнение"
-  echo -ne "$message... "
+  # Выводим сообщение с "идет выполнение" и очищаем строку
+  printf "%-60s" "$message... "
 
   # Если команда интерактивная, выполняем ее с выводом на экран
   if [ "$interactive" = true ]; then
@@ -29,8 +29,13 @@ log_step() {
     $command >/dev/null 2>&1
   fi
 
-  # После выполнения выводим "ОК"
-  echo -e "\r$message...ОК"
+  # Проверка успешности выполнения команды
+  if [ $? -eq 0 ]; then
+    echo -e "\r$message...ОК"
+  else
+    echo -e "\r$message...Ошибка"
+    exit 1
+  fi
 }
 
 # Показываем заголовок
