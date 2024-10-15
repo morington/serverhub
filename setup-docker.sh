@@ -53,7 +53,7 @@ show_header
 # Запуск команды для каждого этапа
 log_step "Обновляем список пакетов" "sudo apt-get update"
 
-if systemctl is-active --quiet ssh; then
+if systemctl is-active --quiet docker; then
     echo -e "${YELLOW}Docker уже установлен."
     exit 1
 fi
