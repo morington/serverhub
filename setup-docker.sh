@@ -16,7 +16,7 @@ show_header() {
   echo -e "${YELLOW}▒██║▒▒██║██║▒▒▒██║██║▒▒▒▒▒██╔═██╗▒██╔══╝▒▒██╔══██╗▒▒▒▒▒╚════██║██╔══╝▒▒▒▒▒██║▒▒▒██║▒▒▒██║██╔═══╝▒▒"
   echo -e "${YELLOW}▒██████╔╝╚██████╔╝╚██████╗██║▒▒██╗███████╗██║▒▒██║▒▒▒▒▒███████║███████╗▒▒▒██║▒▒▒╚██████╔╝██║▒▒▒▒▒▒"
   echo -e "${YELLOW}▒╚═════╝▒▒╚═════╝▒▒╚═════╝╚═╝▒▒╚═╝╚══════╝╚═╝▒▒╚═╝▒▒▒▒▒╚══════╝╚══════╝▒▒▒╚═╝▒▒▒▒╚═════╝▒╚═╝▒▒▒▒▒▒"
-  echo -e "${YELLOW}▒▒ ${RESET}by morington${YELLOW} ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ v1.0.0 (15.10.2024) ▒▒▒▒▒"
+  echo -e "${YELLOW}▒▒ ${RESET}by morington${YELLOW} ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ v1.0.1 (15.10.2024) ▒▒▒▒▒"
   echo
 }
 
@@ -27,7 +27,7 @@ log_step() {
   local interactive=${3:-false} # Флаг для интерактивных команд
 
   # Выводим сообщение с "идет выполнение" и очищаем строку
-  printf "${YELLOW}%-60s${RESET}" "$message... "
+  echo -en "${YELLOW}${message}... ${RESET}"
 
   # Выполняем команду
    if [ "$interactive" = true ]; then
@@ -40,12 +40,12 @@ log_step() {
 
   # Проверка успешности выполнения команды
   if [ $? -eq 0 ]; then
-    printf "\r${YELLOW}%-100s\t${GREEN}ОК${RESET}\n" "$message..."
-else
-    printf "\r${YELLOW}%-100s\t${RED}Ошибка${RESET}\n" "$message..."
-    echo -e "${RED}$output"
+    echo -e "${GREEN}ОК${RESET}"
+  else
+    echo -e "${RED}Ошибка${RESET}"
+    echo -e "${RED}$output${RESET}"
     exit 1
-fi
+  fi
 }
 
 # Показываем заголовок
@@ -105,5 +105,5 @@ done
 echo -ne "${RESET}"
 
 echo
-echo -e "${YELLOW}Установка Docker завершена" "echo"
+echo -e "${GREEN}Установка Docker завершена"
 echo
