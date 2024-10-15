@@ -11,11 +11,11 @@ log_step() {
 
 # Обновляем список пакетов
 log_step "Обновляем список пакетов..."
-sudo apt update | tee >(log_step "Обновление списка пакетов завершено.")  # Используем tee для отображения действий в реальном времени
+sudo apt-get update | tee >(log_step "Обновление списка пакетов завершено.")  # Используем tee для отображения действий в реальном времени
 
-# Устанавливаем пакеты для работы apt через HTTPS
+# Устанавливаем пакеты для работы apt-get через HTTPS
 log_step "Устанавливаем пакеты для работы через HTTPS..."
-sudo apt install -y apt-transport-https ca-certificates curl software-properties-common \
+sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common \
     | tee >(log_step "Установка пакетов для HTTPS завершена.")
 
 # Добавляем GPG-ключ репозитория Docker
@@ -30,7 +30,7 @@ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubun
 
 # Обновляем список пакетов с репозитория Docker
 log_step "Обновляем список пакетов после добавления репозитория Docker..."
-sudo apt update | tee >(log_step "Список пакетов обновлен.")
+sudo apt-get update | tee >(log_step "Список пакетов обновлен.")
 
 # Проверяем доступные версии Docker
 log_step "Проверяем доступные версии Docker..."
@@ -38,7 +38,7 @@ apt-cache policy docker-ce | tee >(log_step "Проверка версий Docke
 
 # Устанавливаем Docker
 log_step "Устанавливаем Docker..."
-sudo apt install -y docker-ce | tee >(log_step "Установка Docker завершена.")
+sudo apt-get install -y docker-ce | tee >(log_step "Установка Docker завершена.")
 
 # Проверяем статус Docker
 log_step "Проверка статуса Docker..."
