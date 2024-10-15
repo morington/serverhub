@@ -60,7 +60,7 @@ fi
 
 log_step "Устанавливаем пакеты для работы через HTTPS" "sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common"
 log_step "Добавляем GPG-ключ репозитория Docker" "bash -c \"curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -\""
-log_step "Добавляем репозиторий Docker в источники APT" 'sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"' true
+log_step "Добавляем репозиторий Docker в источники APT" 'sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"'
 log_step "Обновляем список пакетов после добавления репозитория Docker" "sudo apt-get update"
 
 if apt-cache policy docker-ce | grep -q "Candidate:"; then
@@ -81,17 +81,21 @@ fi
 echo
 
 # Запрашиваем пользователя о добавлении в группу Docker
-CURRENT_USER=$(whoami)
 echo -ne "${YELLOW}"
-read -p "Хотите добавить текущего пользователя ($CURRENT_USER) в группу Docker для запуска без sudo? (y/n): " add_user
+read -p "Хотите настроить доступ к Docker без sudo для текущего пользователя ($CURRENT_USER) через sudoers? (y/n): " add_user
 echo -ne "${RESET}"
 
 if [[ "$add_user" == "y" || "$add_user" == "Y" ]]; then
-  log_step "Добавляем $CURRENT_USER в группу Docker" "sudo usermod -aG docker $CURRENT_USER"
-  echo -e "${GREEN}Пользователь $CURRENT_USER добавлен в группу Docker. Для применения изменений, выйдите и снова войдите в систему.${RESET}"
+  # Добавляем запись в файл /etc/sudoers.d/docker
+  echo "$CURRENT_USER ALL=(ALL) NOPASSWD: /usr/bin/docker" | sudo tee /etc/sudoers.d/docker >/dev/null
+  sudo chmod 0440 /etc/sudoers.d/docker
+
+  echo -e "${YELLOW}Настроен доступ к Docker без sudo для $CURRENT_USER."
+  echo -e "Изменения вступили в силу сразу.${RESET}"
 else
-  echo -e "${RED}Добавление в группу Docker пропущено.${RESET}"
+  echo -e "${RED}Настройка доступа к Docker без sudo пропущена.${RESET}"
 fi
 
-log_step "Установка Docker завершена" "echo"
+echo
+echo -e "${YELLOW}Установка Docker завершена" "echo"
 echo
