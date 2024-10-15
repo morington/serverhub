@@ -24,9 +24,9 @@ log_step() {
 
   # Если команда интерактивная, выполняем ее с выводом на экран
   if [ "$interactive" = true ]; then
-    $command
+    bash -c "$command"
   else
-    $command >/dev/null 2>&1
+    bash -c "$command" >/dev/null 2>&1
   fi
 
   # Проверка успешности выполнения команды
