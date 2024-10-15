@@ -39,9 +39,9 @@ log_step() {
 
   # Проверка успешности выполнения команды
   if [ $? -eq 0 ]; then
-    printf "\r${YELLOW}%-50s\t${GREEN}ОК${RESET}\n" "$message..."
+    printf "\r${YELLOW}%-100s\t${GREEN}ОК${RESET}\n" "$message..."
 else
-    printf "\r${YELLOW}%-50s\t${RED}Ошибка${RESET}\n" "$message..."
+    printf "\r${YELLOW}%-100s\t${RED}Ошибка${RESET}\n" "$message..."
     echo -e "${RED}$output"
     exit 1
 fi
