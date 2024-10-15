@@ -24,9 +24,9 @@ log_step() {
 
   # Если команда интерактивная, выполняем ее с выводом на экран
   if [ "$interactive" = true ]; then
-    bash -c "$command"
+    $command
   else
-    bash -c "$command" >/dev/null 2>&1
+    $command >/dev/null 2>&1
   fi
 
   # Проверка успешности выполнения команды
@@ -44,7 +44,7 @@ show_header
 # Запуск команды для каждого этапа
 log_step "Обновляем список пакетов" "sudo apt-get update"
 log_step "Устанавливаем пакеты для работы через HTTPS" "sudo apt-get install apt-transport-https ca-certificates curl software-properties-common"
-log_step "Добавляем GPG-ключ репозитория Docker" "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -"
+log_step "Добавляем GPG-ключ репозитория Docker" "bash -c 'curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -'"
 log_step "Добавляем репозиторий Docker в источники APT" 'sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"'
 log_step "Обновляем список пакетов после добавления репозитория Docker" "sudo apt-get update"
 log_step "Проверяем доступные версии Docker" "apt-cache policy docker-ce"
