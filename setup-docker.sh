@@ -23,13 +23,14 @@ RESET='\e[0m'
 log_step() {
   local message=$1
   local command=$2
-  local interactive=${3:-true} # Флаг для интерактивных команд
+  local interactive=${3:-false} # Флаг для интерактивных команд
 
   # Выводим сообщение с "идет выполнение" и очищаем строку
   printf "${YELLOW}%-60s${RESET}" "$message... "
 
   # Выполняем команду
    if [ "$interactive" = true ]; then
+    echo
     eval "$command"
   else
     # Выполняем команду, подавляя её вывод
@@ -56,7 +57,7 @@ log_step "Добавляем репозиторий Docker в источники
 log_step "Обновляем список пакетов после добавления репозитория Docker" "sudo apt-get update"
 
 if apt-cache policy docker-ce | grep -q "Candidate:"; then
-    echo -e "${GREEN}Пакет `docker-ce` доступен в репозиториях."
+    echo -e "${YELLOW}Пакет docker-ce доступен в репозиториях."
 else
     echo -e "${RED}Ошибка: ${YELLOW}Пакет `docker-ce` недоступен."
     exit 1
@@ -65,11 +66,12 @@ fi
 log_step "Устанавливаем Docker" "sudo apt-get install -y docker-ce"
 
 if systemctl is-active --quiet ssh; then
-    echo -e "${GREEN} запущен."
+    echo -e "${YELLOW}Docker запущен."
 else
     echo -e "${RED}Ошибка: ${YELLOW}Docker не запущен."
     exit 1
 fi
+echo
 
 # Запрашиваем пользователя о добавлении в группу Docker
 CURRENT_USER=$(whoami)
