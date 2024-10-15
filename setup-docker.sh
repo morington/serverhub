@@ -38,9 +38,9 @@ show_header
 
 # Запуск команды для каждого этапа
 log_step "Обновляем список пакетов" "sudo apt-get update"
-log_step "Устанавливаем пакеты для работы через HTTPS" "sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common"
-log_step "Добавляем GPG-ключ репозитория Docker" "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg"
-log_step "Добавляем репозиторий Docker в источники APT" "echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable' | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null"
+log_step "Устанавливаем пакеты для работы через HTTPS" "sudo apt-get install apt-transport-https ca-certificates curl software-properties-common"
+log_step "Добавляем GPG-ключ репозитория Docker" "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -"
+log_step "Добавляем репозиторий Docker в источники APT" 'sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"'
 log_step "Обновляем список пакетов после добавления репозитория Docker" "sudo apt-get update"
 log_step "Проверяем доступные версии Docker" "apt-cache policy docker-ce"
 log_step "Устанавливаем Docker" "sudo apt-get install -y docker-ce"
