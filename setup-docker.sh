@@ -24,9 +24,9 @@ log_step() {
 
   # Если команда интерактивная, выполняем ее с выводом на экран
   if [ "$interactive" = true ]; then
-    $command
+    eval "$command"
   else
-    $command >/dev/null 2>&1
+    eval "$command" >/dev/null 2>&1
   fi
 
   # Проверка успешности выполнения команды
