@@ -28,15 +28,15 @@ log_step() {
   printf "${YELLOW}%-60s${RESET}" "$message... "
 
   # Выполняем команду с подавлением вывода
-  eval "$command" >/dev/null 2>&1
+  eval "$command"
 
   # Проверка успешности выполнения команды
   if [ $? -eq 0 ]; then
-    echo -e "\r${YELLOW}$message...${GREEN}ОК${RESET}"
-  else
-    echo -e "\r${YELLOW}$message...${RED}Ошибка${RESET}"
+    printf "\r${YELLOW}%-50s\t${GREEN}ОК${RESET}\n" "$message..."
+else
+    printf "\r${YELLOW}%-50s\t${RED}Ошибка${RESET}\n" "$message..."
     exit 1
-  fi
+fi
 }
 
 # Показываем заголовок
