@@ -5,6 +5,7 @@ GREEN='\e[32m'
 RED='\e[31m'
 YELLOW='\e[33m'
 RESET='\e[0m'
+CURRENT_USER=$(whoami)
 
 # Функция для отображения заголовка
 show_header() {
@@ -82,19 +83,27 @@ echo
 
 # Запрашиваем пользователя о добавлении в группу Docker
 echo -ne "${YELLOW}"
-read -p "Хотите настроить доступ к Docker без sudo для текущего пользователя ($CURRENT_USER) через sudoers? (y/n): " add_user
+
+# Используем цикл для проверки корректности ввода
+while true; do
+  read -p "Хотите настроить доступ к Docker без sudo для текущего пользователя ($CURRENT_USER) через sudoers? (y/n): " add_user
+  if [[ "$add_user" == "y" || "$add_user" == "Y" ]]; then
+    # Добавляем запись в файл /etc/sudoers.d/docker
+    echo "${CURRENT_USER} ALL=(ALL) NOPASSWD: /usr/bin/docker" | sudo tee /etc/sudoers.d/docker >/dev/null
+    sudo chmod 0440 /etc/sudoers.d/docker
+
+    echo -e "${YELLOW}Настроен доступ к Docker без sudo для $CURRENT_USER."
+    echo -e "Изменения вступили в силу сразу.${RESET}"
+    break
+  elif [[ "$add_user" == "n" || "$add_user" == "N" ]]; then
+    echo -e "${RED}Настройка доступа к Docker без sudo пропущена.${RESET}"
+    break
+  else
+    echo -e "${RED}Ошибка: введите 'y' или 'n'.${YELLOW}"
+  fi
+done
+
 echo -ne "${RESET}"
-
-if [[ "$add_user" == "y" || "$add_user" == "Y" ]]; then
-  # Добавляем запись в файл /etc/sudoers.d/docker
-  echo "$CURRENT_USER ALL=(ALL) NOPASSWD: /usr/bin/docker" | sudo tee /etc/sudoers.d/docker >/dev/null
-  sudo chmod 0440 /etc/sudoers.d/docker
-
-  echo -e "${YELLOW}Настроен доступ к Docker без sudo для $CURRENT_USER."
-  echo -e "Изменения вступили в силу сразу.${RESET}"
-else
-  echo -e "${RED}Настройка доступа к Docker без sudo пропущена.${RESET}"
-fi
 
 echo
 echo -e "${YELLOW}Установка Docker завершена" "echo"
