@@ -99,12 +99,12 @@ while true; do
     echo -e "${GREEN}Пользователь $CURRENT_USER добавлен в группу Docker."
     echo
     echo -e "${YELLOW}Необходимо перелогинить пользователя."
-    echo -e "Либо введите newgrp docker для применения группы пользователю."
+    echo -e "Либо введите 'newgrp docker' для применения группы пользователю."
 
     break
   elif [[ "$add_user" == "n" || "$add_user" == "N" ]]; then
     echo -e "${YELLOW}Добавление пользователя в группу Docker пропущено."
-    echo -e "Вы можете самостоятельно добавить пользователя в группу sudo usermod -aG docker <username>"
+    echo -e "Вы можете самостоятельно добавить пользователя в группу 'sudo usermod -aG docker <username>'"
     break
   else
     echo -e "${RED}Ошибка: ${YELLOW}Введите 'y' или 'n'."
