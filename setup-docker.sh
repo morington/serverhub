@@ -13,27 +13,28 @@ show_header() {
   echo
 }
 
-# Функция для вывода сообщений с анимацией выполнения
+# Цвета для вывода
+GREEN='\e[32m'
+RED='\e[31m'
+YELLOW='\e[33m'
+RESET='\e[0m'
+
+# Функция для вывода сообщений и выполнения команд
 log_step() {
   local message=$1
   local command=$2
-  local interactive=${3:-true} # Флаг для интерактивного режима (по умолчанию false)
 
   # Выводим сообщение с "идет выполнение" и очищаем строку
-  printf "%-60s" "$message... "
+  printf "${YELLOW}%-60s${RESET}" "$message... "
 
-  # Если команда интерактивная, выполняем ее с выводом на экран
-  if [ "$interactive" = true ]; then
-    eval "$command"
-  else
-    eval "$command" >/dev/null 2>&1
-  fi
+  # Выполняем команду с подавлением вывода
+  eval "$command" >/dev/null 2>&1
 
   # Проверка успешности выполнения команды
   if [ $? -eq 0 ]; then
-    echo -e "\r$message...ОК"
+    echo -e "\r${YELLOW}$message...${GREEN}ОК${RESET}"
   else
-    echo -e "\r$message...Ошибка"
+    echo -e "\r${YELLOW}$message...${RED}Ошибка${RESET}"
     exit 1
   fi
 }
@@ -51,15 +52,17 @@ log_step "Проверяем доступные версии Docker" "apt-cache 
 log_step "Устанавливаем Docker" "sudo apt-get install -y docker-ce"
 log_step "Проверка статуса Docker" "sudo systemctl status docker --no-pager"
 
-# Спрашиваем пользователя о добавлении в группу Docker
+# Запрашиваем пользователя о добавлении в группу Docker
 CURRENT_USER=$(whoami)
-echo
+echo -ne "${YELLOW}"
 read -p "Хотите добавить текущего пользователя ($CURRENT_USER) в группу Docker для запуска без sudo? (y/n): " add_user
+echo -ne "${RESET}"
+
 if [[ "$add_user" == "y" || "$add_user" == "Y" ]]; then
   log_step "Добавляем $CURRENT_USER в группу Docker" "sudo usermod -aG docker $CURRENT_USER"
-  echo "Пользователь $CURRENT_USER добавлен в группу Docker. Для применения изменений, выйдите и снова войдите в систему."
+  echo -e "${GREEN}Пользователь $CURRENT_USER добавлен в группу Docker. Для применения изменений, выйдите и снова войдите в систему.${RESET}"
 else
-  echo "Добавление в группу Docker пропущено."
+  echo -e "${RED}Добавление в группу Docker пропущено.${RESET}"
 fi
 
 log_step "Установка Docker завершена" "echo"
