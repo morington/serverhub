@@ -17,7 +17,7 @@ show_header() {
 log_step() {
   local message=$1
   local command=$2
-  local interactive=${3:-false} # Флаг для интерактивного режима (по умолчанию false)
+  local interactive=${3:-true} # Флаг для интерактивного режима (по умолчанию false)
 
   # Выводим сообщение с "идет выполнение"
   echo -ne "$message... "
